@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../cubit/layout_cubit/layout_cubit.dart';
+import '../../widgets/articles_widget.dart';
 
 class WallStreetScreen extends StatelessWidget {
   const WallStreetScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Wall Street'),
+    return BlocConsumer<LayoutCubit, LayoutStates>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        var list = LayoutCubit.get(context).wallStreetNews.articles;
+        return ArticlesWidget(articles: list);
+      },
     );
   }
 }

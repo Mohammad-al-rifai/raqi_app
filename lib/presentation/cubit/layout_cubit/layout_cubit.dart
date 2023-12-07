@@ -54,6 +54,16 @@ class LayoutCubit extends Cubit<LayoutStates> {
   void changeBottomNavBarIndex({
     required int index,
   }) {
+    if (index == 1) {
+      getBusinessNews();
+    }
+    if (index == 2) {
+      getTeslaNews();
+    }
+    if (index == 3) {
+      getWallStreetNews();
+    }
+
     currentIndex = index;
     emit(NewsBottomNavbarState());
   }
@@ -80,6 +90,75 @@ class LayoutCubit extends Cubit<LayoutStates> {
       (error) {
         print(error.toString());
         emit(GetAppleErrorState());
+      },
+    );
+  }
+
+  // Get Business News API
+  NewsResponseModel businessNews = NewsResponseModel();
+  getBusinessNews() async {
+    emit(GetBusinessLoadingState());
+
+    DioHelper.instance.getData(
+      url: Urls.businessUrl,
+      query: {
+        "apiKey": Constants.apiKey,
+        "country": "us",
+        "category": "business",
+      },
+    ).then((value) {
+      businessNews = NewsResponseModel.fromJson(value.data);
+      emit(GetBusinessDoneState());
+    }).catchError(
+      (error) {
+        print(error.toString());
+        emit(GetBusinessErrorState());
+      },
+    );
+  }
+
+  // Get Tesla News API
+  NewsResponseModel teslaNews = NewsResponseModel();
+  getTeslaNews() async {
+    emit(GetTeslaLoadingState());
+
+    DioHelper.instance.getData(
+      url: Urls.teslaUrl,
+      query: {
+        "apiKey": Constants.apiKey,
+        "q": "tesla",
+        "from": "2023-11-06",
+        "sortBy": "publishedAt",
+      },
+    ).then((value) {
+      teslaNews = NewsResponseModel.fromJson(value.data);
+      emit(GetTeslaDoneState());
+    }).catchError(
+      (error) {
+        print(error.toString());
+        emit(GetTeslaErrorState());
+      },
+    );
+  }
+
+  // Get Wall Street News API
+  NewsResponseModel wallStreetNews = NewsResponseModel();
+  getWallStreetNews() async {
+    emit(GetWallStreetLoadingState());
+
+    DioHelper.instance.getData(
+      url: Urls.wallStreetUrl,
+      query: {
+        "apiKey": Constants.apiKey,
+        "domains": "wsj.com",
+      },
+    ).then((value) {
+      wallStreetNews = NewsResponseModel.fromJson(value.data);
+      emit(GetWallStreetDoneState());
+    }).catchError(
+      (error) {
+        print(error.toString());
+        emit(GetWallStreetErrorState());
       },
     );
   }
